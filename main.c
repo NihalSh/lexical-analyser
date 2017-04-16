@@ -50,7 +50,9 @@ int main()
 	int bufferIndex = 0;
 	int i;
 	while ((c = fgetc(fid)) != EOF) {
-		if (c == '#'){
+		if (characterConstant && !((c == '\"') || (c == '\''))) {
+			buffer[bufferIndex++] = c;
+		} else if (c == '#'){
 			preprocessorDirective = 1;
 			printf("Preprocessor Directive:\n");
 			printf("%c", c);
@@ -60,8 +62,6 @@ int main()
 			}
 			printf("%c", c);
 			//preprocessor directives !identifier && ((c == '_') || ( !!isalnum() ))
-		} else if (characterConstant && !((c == '\"') || (c == '\''))) {
-			buffer[bufferIndex++] = c;
 		} else if (!characterConstant && !identifier && ((c == '_') || (isalpha(c)) )) {
 			identifier = 1;
 			bufferIndex = 0;
@@ -85,6 +85,7 @@ int main()
 			} else if (bufferIndex) {
 				buffer[bufferIndex] = '\0';
 				bufferIndex = 0;
+				identifier = 0;
 				for (i = 0; i < 32; i++) {
 					if (strcmp(keywords[i], buffer) == 0) {
 						printf("Keyword: %s\n", buffer);
